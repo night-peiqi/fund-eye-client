@@ -1,0 +1,97 @@
+name: Build Electron App
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for Windows
+        if: matrix.platform == 'win'
+        run: npm run build:win -- --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build for macOS
+        if: matrix.platform == 'mac'
+        run: npm run build:mac -- --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get changelog
+        if: matrix.platform == 'win' && startsWith(github.ref, 'refs/tags/')
+        id: changelog
+        run: |
+          # 从 CHANGELOG.md 提取当前版本的更新内容
+          VERSION="${{ github.ref_name }}"
+          VERSION="${VERSION#v}"  # 去掉 v 前缀
+
+          # 提取当前版本到下一个版本之间的内容
+          CHANGELOG=$(awk "/^## v${VERSION}/,/^## v[0-9]/" CHANGELOG.md | head -n -1 | tail -n +2)
+
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Upload Windows to Release
+        if: matrix.platform == 'win' && startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          body: ${{ steps.changelog.outputs.content }}
+          files: |
+            release/*.exe
+            release/*.blockmap
+            release/latest.yml
+
+      - name: Upload macOS to Release
+        if: matrix.platform == 'mac' && startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          files: |
+            release/*.dmg
+            release/*.zip
+            release/latest-mac.yml
+
+      - name: Upload artifacts
+        if: "!startsWith(github.ref, 'refs/tags/')"
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-build
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.zip
+          if-no-files-found: ignore

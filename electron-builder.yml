@@ -1,0 +1,120 @@
+# electron-builder configuration
+# This file provides additional configuration options beyond package.json
+
+appId: com.fundeye.app
+productName: FundEye
+copyright: Copyright © 2024 FundEye
+
+# Directories
+directories:
+  output: release
+  buildResources: build
+
+# Files to include
+files:
+  - dist/**/*
+  - dist-electron/**/*
+
+# Extra metadata
+extraMetadata:
+  main: dist-electron/main.js
+
+# Windows configuration
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - ia32
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: ${productName}-${version}-${arch}-setup.${ext}
+  # Request admin privileges for installation
+  requestedExecutionLevel: asInvoker
+
+# NSIS installer configuration
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  allowElevation: true
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: FundEye
+  # Installer language
+  installerLanguages:
+    - zh_CN
+    - en_US
+  # License file (optional)
+  # license: LICENSE.txt
+
+# Portable configuration
+portable:
+  artifactName: ${productName}-${version}-portable.${ext}
+
+# macOS configuration
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  icon: build/icon.icns
+  category: public.app-category.finance
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  # Code signing (configure for production)
+  # identity: Developer ID Application: Your Name (XXXXXXXXXX)
+  # entitlements: build/entitlements.mac.plist
+  # entitlementsInherit: build/entitlements.mac.plist
+
+# DMG configuration
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+  window:
+    width: 540
+    height: 380
+  # Background image (optional)
+  # background: build/dmg-background.png
+
+# Linux configuration (bonus)
+linux:
+  target:
+    - AppImage
+    - deb
+  icon: build/icons
+  category: Finance
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  # Desktop file
+  desktop:
+    Name: FundEye
+    Comment: Real-time fund valuation tracker
+    Categories: Finance;Office;
+
+# Publish configuration (for auto-update, used by electron-updater to check releases)
+# Note: actual publishing is handled by GitHub Actions, not electron-builder
+publish:
+  provider: github
+  releaseType: release
+
+# Compression
+compression: normal
+
+# Remove unnecessary files
+removePackageScripts: true
