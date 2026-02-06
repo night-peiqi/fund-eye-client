@@ -69,6 +69,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: false
+          make_latest: true
           body: ${{ steps.changelog.outputs.content }}
           files: |
             release/*.exe
@@ -80,6 +81,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: false
+          make_latest: true
           files: |
             release/*.dmg
             release/*.zip
