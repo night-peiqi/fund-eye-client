@@ -1,10 +1,12 @@
 /**
- * 存储的持仓信息（不含实时数据）
+ * 存储的持仓信息
  */
 export interface StoredHolding {
   stockCode: string // 股票代码
   stockName: string // 股票名称
   ratio: number // 持仓占比 (百分比)
+  change?: number // 涨跌幅
+  price?: number // 现价
 }
 
 /**

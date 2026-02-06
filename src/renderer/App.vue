@@ -368,12 +368,7 @@ body {
 
   .content-section {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-  }
-
-  .detail-panel {
-    max-height: 50vh;
-    overflow-y: auto;
+    grid-template-rows: auto auto;
   }
 
   .toolbar {
@@ -421,10 +416,6 @@ body {
 @media (max-width: 400px) {
   .app-header h1 {
     font-size: 16px;
-  }
-
-  .detail-panel {
-    max-height: 40vh;
   }
 }
 

@@ -184,8 +184,8 @@ export class StorageService implements IStorageService {
         stockCode: h.stockCode,
         stockName: h.stockName,
         ratio: h.ratio,
-        change: 0,
-        price: 0
+        change: h.change ?? 0,
+        price: h.price ?? 0
       }))
     }
   }
@@ -206,7 +206,9 @@ export class StorageService implements IStorageService {
       holdings: fund.holdings.map((h) => ({
         stockCode: h.stockCode,
         stockName: h.stockName,
-        ratio: h.ratio
+        ratio: h.ratio,
+        change: h.change,
+        price: h.price
       })),
       addedAt: fund.updateTime || new Date().toISOString()
     }

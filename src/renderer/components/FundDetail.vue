@@ -1,7 +1,7 @@
 <template>
   <div class="fund-detail">
     <div v-if="!fund" class="no-selection">
-      <el-empty description="请选择一个基金查看详情" />
+      <el-empty description="点击左侧基金可查看前十大持仓" />
     </div>
 
     <template v-else>
