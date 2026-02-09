@@ -144,8 +144,8 @@ function formatValue(value: number): string {
  * 格式化涨跌幅显示
  * Requirement 3.2: 显示今日涨跌幅
  */
-function formatChange(change: number): string {
-  if (change === undefined || isNaN(change)) return '--'
+function formatChange(change: number | null | undefined): string {
+  if (change === null || change === undefined || isNaN(change)) return '--'
   const sign = change >= 0 ? '+' : ''
   return `${sign}${change.toFixed(2)}%`
 }
@@ -164,8 +164,8 @@ function getChangeClass(change: number): string {
 /**
  * 获取总仓位涨跌颜色类名
  */
-function getTotalChangeClass(change: number | null): string {
-  if (change === null || isNaN(change)) return 'change-neutral'
+function getTotalChangeClass(change: number | null | undefined): string {
+  if (change === null || change === undefined || isNaN(change)) return 'change-neutral'
   if (change > 0) return 'change-up'
   if (change < 0) return 'change-down'
   return 'change-neutral'
