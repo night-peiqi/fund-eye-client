@@ -1,7 +1,7 @@
 {
   "name": "fund-eye",
   "type": "module",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "FundEye - 实时追踪基金估值",
   "repository": {
     "type": "git",
